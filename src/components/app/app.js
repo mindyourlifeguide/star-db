@@ -2,15 +2,27 @@ import React, { Component } from 'react';
 
 import Header from '../header';
 import RandomPlanet from '../random-planet';
-import ItemList from '../item-list';
-import PersonDetails from '../person-details';
+import ErrorBoundry from '../error-boundry';
+
+import ItemDetails, { Record } from '../item-details/item-details';
+import SwapiService from '../../services/swapi-service';
+
+import {
+	PersonDetails,
+	PlanetDetails,
+	StarshipDetails,
+	PersonList,
+	PlanetList,
+	StarshipList,
+} from '../sw-components';
 
 import './app.css';
 
 export default class App extends Component {
+	swapiService = new SwapiService();
+
 	state = {
 		showRandomPlanet: true,
-		selectedPerson: 5,
 	};
 
 	toggleRandomPlanet = () => {
@@ -21,35 +33,57 @@ export default class App extends Component {
 		});
 	};
 
-	onPersonselected = id => {
-		this.setState({
-			selectedPerson: id,
-		});
-	};
-
 	render() {
 		const planet = this.state.showRandomPlanet ? <RandomPlanet /> : null;
 
+		const {
+			getPerson,
+			getStarship,
+			getPersonImage,
+			getStarshipImage,
+			getAllPeople,
+			getAllPlanets,
+		} = this.swapiService;
+
+		const personDetails = (
+			<ItemDetails
+				itemId={11}
+				getData={getPerson}
+				getImageUrl={getPersonImage}>
+				<Record field="gender" label="Gender" />
+				<Record field="eyeColor" label="Eye Color" />
+			</ItemDetails>
+		);
+
+		const starshipDetails = (
+			<ItemDetails
+				itemId={5}
+				getData={getStarship}
+				getImageUrl={getStarshipImage}>
+				<Record field="model" label="Model" />
+				<Record field="length" label="Length" />
+				<Record field="costInCredits" label="Cost" />
+			</ItemDetails>
+		);
+
 		return (
-			<div className="stardb-app">
-				<Header />
-				{planet}
+			<ErrorBoundry>
+				<div className="stardb-app">
+					<Header />
 
-				<button
-					className="toggle-planet btn btn-warning btn-lg"
-					onClick={this.toggleRandomPlanet}>
-					Toggle Random Planet
-				</button>
+					<PersonDetails itemId={11} />
 
-				<div className="row mb2">
-					<div className="col-md-6">
-						<ItemList onItemSelected={this.onPersonselected} />
-					</div>
-					<div className="col-md-6">
-						<PersonDetails personId={this.state.selectedPerson} />
-					</div>
+					<PlanetDetails itemId={5} />
+
+					<StarshipDetails itemId={9} />
+
+					<PersonList />
+
+					<StarshipList />
+
+					<PlanetList />
 				</div>
-			</div>
+			</ErrorBoundry>
 		);
 	}
 }

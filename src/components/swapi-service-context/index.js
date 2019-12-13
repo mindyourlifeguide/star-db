@@ -1,6 +1,6 @@
 import {
-	SwapiServiceConsumer,
 	SwapiServiceProvider,
+	SwapiServiceConsumer,
 } from './swapi-service-context';
 
-export { SwapiServiceConsumer, SwapiServiceProvider };
+export { SwapiServiceProvider, SwapiServiceConsumer };
